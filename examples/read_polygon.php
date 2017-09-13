@@ -1,6 +1,6 @@
 <pre><?php
 // require_once('ShapeFile.lib.php');
-include "vendor/autoload.php";
+include "../vendor/autoload.php";
 
  
 // $page1 = new ShpAdapter\Proj4\Common();

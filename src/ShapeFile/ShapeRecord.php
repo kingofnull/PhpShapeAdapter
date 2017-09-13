@@ -1,6 +1,6 @@
 <?php
 namespace ShpAdapter\ShapeFile;
-
+use ShpAdapter\GeoPhp\WKT;
 
 
  class ShapeRecord {
@@ -120,8 +120,14 @@ namespace ShpAdapter\ShapeFile;
     }
     
     function _savePoint($data) {
-      fwrite($this->SHPFile, Util::packDouble($data["x"]));
-      fwrite($this->SHPFile, Util::packDouble($data["y"]));
+		if(isset($data['x'])){
+			fwrite($this->SHPFile, Util::packDouble($data["x"]));
+			fwrite($this->SHPFile, Util::packDouble($data["y"]));	
+		}else{
+			fwrite($this->SHPFile, Util::packDouble($data[0]));
+			fwrite($this->SHPFile, Util::packDouble($data[1]));
+		}
+
     }
     
     function _loadNullRecord() {
@@ -259,6 +265,37 @@ namespace ShpAdapter\ShapeFile;
       $this->_savePolyLineRecord();
     }
     
+	
+	function setFromWkt($wkt){
+		$a=new WKT();
+		$g=$a->read($wkt);
+		$extend=$g->getBBox();
+		$this->SHPData["xmin"]=$extend['minx'];
+		$this->SHPData["xmax"]=$extend['maxx'];
+
+		$this->SHPData["ymin"]=$extend['miny'];
+		$this->SHPData["ymax"]=$extend['maxy'];
+
+				
+
+		switch ($this->shapeType) {
+			case self::POLYGON_TYPE:
+				// $r=$a->read("POLYGON((1 1,2 2,3 3,1 1))");
+				
+				
+
+				// var_dump();die;
+				// var_dump($g->getBBox());die;
+				$this->SHPData["parts"][0]['points']=$g->asArray()[0];
+				$this->SHPData["numpoints"]=count($this->SHPData["parts"][0]['points']);
+				$this->SHPData["numparts"]=1;	
+				// var_dump($wkt);
+				break;
+			default:
+				throw new Exception("invalid shape type");
+		}
+	}
+	
     function addPoint($point, $partIndex = 0) {
       switch ($this->shapeType) {
         case 0:
