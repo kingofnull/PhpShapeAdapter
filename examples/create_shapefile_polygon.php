@@ -36,7 +36,7 @@ $shp->setDBFHeader(array(
 					));
 
 $shp->records[0]->DBFData['ID'] = '1';
-$shp->records[0]->DBFData['DESC'] = 'سلام';
+$shp->records[0]->DBFData['DESC'] = 'مرگ بر تو';
 
 // $shp->records[1]->DBFData['ID'] = '2';
 // $shp->records[1]->DBFData['DESC'] = 'BBBBBBBBBB';
