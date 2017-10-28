@@ -63,7 +63,7 @@ class Merc
             if (isset($this->sphere)) { //EPSG:3752 does not define sphere
                 $this->k0 = cos( $this->lat_ts );
             } else {
-                $this->k0 = Common::msfnz($this->es, sin($this->lat_ts), cos($this->lat_ts));
+                $this->k0 = \ShpAdapter\Proj4\Common::msfnz($this->es, sin($this->lat_ts), cos($this->lat_ts));
             }
         }
     }
@@ -77,25 +77,25 @@ class Merc
         $lon = $p->x;
         $lat = $p->y;
         // convert to radians
-        if( $lat * Common::R2D > 90.0 &&
-                  $lat * Common::R2D < -90.0 &&
-                  $lon * Common::R2D > 180.0 &&
-                  $lon * Common::R2D < -180.0 ) {
+        if( $lat * \ShpAdapter\Proj4\Common::R2D > 90.0 &&
+                  $lat * \ShpAdapter\Proj4\Common::R2D < -90.0 &&
+                  $lon * \ShpAdapter\Proj4\Common::R2D > 180.0 &&
+                  $lon * \ShpAdapter\Proj4\Common::R2D < -180.0 ) {
             Proj4php::reportError( "merc:forward: llInputOutOfRange: " . $lon . " : " . $lat );
             return null;
         }
         
-        if( abs( abs( $lat ) - Common::HALF_PI ) <= Common::EPSLN ) {
+        if( abs( abs( $lat ) - \ShpAdapter\Proj4\Common::HALF_PI ) <= \ShpAdapter\Proj4\Common::EPSLN ) {
             Proj4php::reportError( "merc:forward: ll2mAtPoles" );
             return null;
         } else {
             if( $this->sphere ) {
-                $x = $this->x0 + $this->a * $this->k0 * Common::adjust_lon( $lon - $this->long0 );
-                $y = $this->y0 + $this->a * $this->k0 * log( tan( Common::FORTPI + 0.5 * $lat ) );
+                $x = $this->x0 + $this->a * $this->k0 * \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 );
+                $y = $this->y0 + $this->a * $this->k0 * log( tan( \ShpAdapter\Proj4\Common::FORTPI + 0.5 * $lat ) );
             } else {
                 $sinphi = sin( lat );
-                $ts = Common::tsfnz( $this->e, $lat, $sinphi );
-                $x = $this->x0 + $this->a * $this->k0 * Common::adjust_lon( $lon - $this->long0 );
+                $ts = \ShpAdapter\Proj4\Common::tsfnz( $this->e, $lat, $sinphi );
+                $x = $this->x0 + $this->a * $this->k0 * \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 );
                 $y = $this->y0 - $this->a * $this->k0 * log( $ts );
             }
             
@@ -115,16 +115,16 @@ class Merc
         $y = $p->y - $this->y0;
         
         if( $this->sphere ) {
-            $lat = Common::HALF_PI - 2.0 * atan(exp(-$y / $this->a * $this->k0));
+            $lat = \ShpAdapter\Proj4\Common::HALF_PI - 2.0 * atan(exp(-$y / $this->a * $this->k0));
         } else {
             $ts = exp(-$y / ($this->a * $this->k0));
-            $lat = Common::phi2z( $this->e, $ts );
+            $lat = \ShpAdapter\Proj4\Common::phi2z( $this->e, $ts );
             if( $lat == -9999 ) {
                 Proj4php::reportError( "merc:inverse: lat = -9999" );
                 return null;
             }
         }
-        $lon = Common::adjust_lon( $this->long0 + $x / ($this->a * $this->k0) );
+        $lon = \ShpAdapter\Proj4\Common::adjust_lon( $this->long0 + $x / ($this->a * $this->k0) );
 
         $p->x = $lon;
         $p->y = $lat;

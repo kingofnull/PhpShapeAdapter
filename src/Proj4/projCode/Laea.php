@@ -59,9 +59,9 @@ class Laea
     public function init()
     {
         $t = abs($this->lat0);
-        if (abs( $t - Common::HALF_PI) < Common::EPSLN) {
+        if (abs( $t - \ShpAdapter\Proj4\Common::HALF_PI) < \ShpAdapter\Proj4\Common::EPSLN) {
             $this->mode = $this->lat0 < 0. ? $this->S_POLE : $this->N_POLE;
-        } else if( abs( $t ) < Common::EPSLN ) {
+        } else if( abs( $t ) < \ShpAdapter\Proj4\Common::EPSLN ) {
             $this->mode = $this->EQUIT;
         } else {
             $this->mode = $this->OBLIQ;
@@ -70,7 +70,7 @@ class Laea
         if ($this->es > 0) {
             #$sinphi;
 
-            $this->qp = Common::qsfnz( $this->e, 1.0 );
+            $this->qp = \ShpAdapter\Proj4\Common::qsfnz( $this->e, 1.0 );
             $this->mmf = 0.5 / (1.0 - $this->es);
             $this->apa = $this->authset( $this->es );
             switch( $this->mode ) {
@@ -87,7 +87,7 @@ class Laea
                 case $this->OBLIQ:
                     $this->rq = sqrt( .5 * $this->qp );
                     $sinphi = sin( $this->lat0 );
-                    $this->sinb1 = Common::qsfnz( $this->e, $sinphi ) / $this->qp;
+                    $this->sinb1 = \ShpAdapter\Proj4\Common::qsfnz( $this->e, $sinphi ) / $this->qp;
                     $this->cosb1 = sqrt( 1. - $this->sinb1 * $this->sinb1 );
                     $this->dd = cos( $this->lat0 ) / (sqrt( 1.0 - $this->es * $sinphi * $sinphi ) * $this->rq * $this->cosb1);
                     $this->ymf = ($this->xmf = $this->rq) / $this->dd;
@@ -112,7 +112,7 @@ class Laea
         #$y;
         $lam = $p->x;
         $phi = $p->y;
-        $lam = Common::adjust_lon($lam - $this->long0);
+        $lam = \ShpAdapter\Proj4\Common::adjust_lon($lam - $this->long0);
 
         if ($this->sphere) {
             /*
@@ -129,7 +129,7 @@ class Laea
                 case $this->OBLIQ:
                 case $this->EQUIT:
                     $y = ($this->mode == $this->EQUIT) ? 1. + $cosphi * $coslam : 1. + $this->sinph0 * $sinphi + $this->cosph0 * $cosphi * $coslam;
-                    if( y <= Common::EPSLN ) {
+                    if( y <= \ShpAdapter\Proj4\Common::EPSLN ) {
                         Proj4php::reportError( "laea:fwd:y less than eps" );
                         return null;
                     }
@@ -140,11 +140,11 @@ class Laea
                 case $this->N_POLE:
                     $coslam = -$coslam;
                 case $this->S_POLE:
-                    if( abs( $phi + $this->phi0 ) < Common::EPSLN ) {
+                    if( abs( $phi + $this->phi0 ) < \ShpAdapter\Proj4\Common::EPSLN ) {
                         Proj4php::reportError( "laea:fwd:phi < eps" );
                         return;
                     }
-                    $y = Common::FORTPI - $phi * 0.5;
+                    $y = \ShpAdapter\Proj4\Common::FORTPI - $phi * 0.5;
                     $y = 2. * (($this->mode == $this->S_POLE) ? cos( $y ) : sin( $y ));
                     $x = $y * sin($lam);
                     $y *= $coslam;
@@ -164,7 +164,7 @@ class Laea
             $coslam = cos( $lam );
             $sinlam = sin( $lam );
             $sinphi = sin( $phi );
-            $q = Common::qsfnz( $this->e, $sinphi );
+            $q = \ShpAdapter\Proj4\Common::qsfnz( $this->e, $sinphi );
 
             if ($this->mode == $this->OBLIQ || $this->mode == $this->EQUIT) {
                 $sinb = $q / $this->qp;
@@ -179,16 +179,16 @@ class Laea
                     $b = 1.0 + $cosb * $coslam;
                     break;
                 case $this->N_POLE:
-                    $b = Common::HALF_PI + $phi;
+                    $b = \ShpAdapter\Proj4\Common::HALF_PI + $phi;
                     $q = $this->qp - $q;
                     break;
                 case $this->S_POLE:
-                    $b = $phi - Common::HALF_PI;
+                    $b = $phi - \ShpAdapter\Proj4\Common::HALF_PI;
                     $q = $this->qp + $q;
                     break;
             }
 
-            if (abs($b) < Common::EPSLN) {
+            if (abs($b) < \ShpAdapter\Proj4\Common::EPSLN) {
                 Proj4php::reportError( "laea:fwd:b < eps" );
                 return null;
             }
@@ -268,21 +268,21 @@ class Laea
             }
             switch( $this->mode ) {
                 case $this->EQUIT:
-                    $phi = (abs( $rh ) <= Common::EPSLN) ? 0. : asin( $y * $sinz / $rh );
+                    $phi = (abs( $rh ) <= \ShpAdapter\Proj4\Common::EPSLN) ? 0. : asin( $y * $sinz / $rh );
                     $x *= $sinz;
                     $y = $cosz * $rh;
                     break;
                 case $this->OBLIQ:
-                    $phi = (abs( $rh ) <= Common::EPSLN) ? $this->phi0 : asin( $cosz * $this->sinph0 + $y * $sinz * $this->cosph0 / $rh );
+                    $phi = (abs( $rh ) <= \ShpAdapter\Proj4\Common::EPSLN) ? $this->phi0 : asin( $cosz * $this->sinph0 + $y * $sinz * $this->cosph0 / $rh );
                     $x *= $sinz * $this->cosph0;
                     $y = ($cosz - sin( $phi ) * $this->sinph0) * $rh;
                     break;
                 case $this->N_POLE:
                     $y = -$y;
-                    $phi = Common::HALF_PI - $phi;
+                    $phi = \ShpAdapter\Proj4\Common::HALF_PI - $phi;
                     break;
                 case $this->S_POLE:
-                    $phi -= Common::HALF_PI;
+                    $phi -= \ShpAdapter\Proj4\Common::HALF_PI;
                     break;
             }
             $lam = ($y == 0. && ($this->mode == $this->EQUIT || $this->mode == $this->OBLIQ)) ? 0. : atan2( $x, $y );
@@ -302,7 +302,7 @@ class Laea
                     $y *= $this->dd;
                     $rho = sqrt( $x * $x + $y * $y );
 
-                    if ($rho < Common::EPSLN) {
+                    if ($rho < \ShpAdapter\Proj4\Common::EPSLN) {
                         $p->x = 0.;
                         $p->y = $this->phi0;
                         return $p;
@@ -355,28 +355,28 @@ class Laea
           return null;
           }
 
-          $z = 2.0 * Common::asinz(temp);
+          $z = 2.0 * \ShpAdapter\Proj4\Common::asinz(temp);
           $sin_z=sin(z);
           $cos_z=cos(z);
 
           $lon =$this->long0;
-          if (abs(Rh) > Common::EPSLN) {
-          $lat = Common::asinz($this->sin_lat_o * cos_z +$this-> cos_lat_o * sin_z *$p->y / Rh);
-          $temp =abs($this->lat0) - Common::HALF_PI;
-          if (abs(temp) > Common::EPSLN) {
+          if (abs(Rh) > \ShpAdapter\Proj4\Common::EPSLN) {
+          $lat = \ShpAdapter\Proj4\Common::asinz($this->sin_lat_o * cos_z +$this-> cos_lat_o * sin_z *$p->y / Rh);
+          $temp =abs($this->lat0) - \ShpAdapter\Proj4\Common::HALF_PI;
+          if (abs(temp) > \ShpAdapter\Proj4\Common::EPSLN) {
           temp = cos_z -$this->sin_lat_o * sin(lat);
-          if(temp!=0.0) lon=Common::adjust_lon($this->long0+atan2($p->x*sin_z*$this->cos_lat_o,temp*Rh));
+          if(temp!=0.0) lon=\ShpAdapter\Proj4\Common::adjust_lon($this->long0+atan2($p->x*sin_z*$this->cos_lat_o,temp*Rh));
           } else if ($this->lat0 < 0.0) {
-          lon = Common::adjust_lon($this->long0 - atan2(-$p->x,$p->y));
+          lon = \ShpAdapter\Proj4\Common::adjust_lon($this->long0 - atan2(-$p->x,$p->y));
           } else {
-          lon = Common::adjust_lon($this->long0 + atan2($p->x, -$p->y));
+          lon = \ShpAdapter\Proj4\Common::adjust_lon($this->long0 + atan2($p->x, -$p->y));
           }
           } else {
           lat = $this->lat0;
           }
          */
         //return(OK);
-        $p->x = Common::adjust_lon( $this->long0 + $lam );
+        $p->x = \ShpAdapter\Proj4\Common::adjust_lon( $this->long0 + $lam );
         $p->y = $phi;
         return $p;
     }

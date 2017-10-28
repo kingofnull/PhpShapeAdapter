@@ -1,6 +1,8 @@
 <pre><?php
 include "../vendor/autoload.php";
 use ShpAdapter\ShapeFile\ShapeFile;
+use ShpAdapter\GeoPhp\GeoPHP;
+use ShpAdapter\GeoPhp\WKT;
 use ShpAdapter\ShapeFile\ShapeRecord;
 // use ShpAdapter\GeoPhp\WKT;
 // use ShpAdapter\GeoPhp\GeoPHP;;
@@ -10,14 +12,27 @@ use ShpAdapter\ShapeFile\ShapeRecord;
 // $r=$a->read("POLYGON((1 1,2 2,3 3,1 1))");
 // print_r($r->asArray());
 // die;
+//$a=new WKT();
+//$poly1 = GeoPHP::load('POLYGON((30 10,10 20,20 40,40 40,30 10))','wkt');
+//$poly2 = GeoPHP::load('POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30, 35 35, 30 20, 20 30))','wkt');
+//$combined_poly = $poly1->union($poly2);
+//var_dump($combined_poly);die;
+//$kml = $combined_poly->out('kml');
+//
+//die;
+
+
 
 // $shp = new ShapeFile(ShapeFile::POINT_TYPE , array("xmin" => 464079.002268, "ymin" => 2120153.74792, "xmax" => 505213.52849, "ymax" => 2163205.70036));
-$shp = new ShapeFile(ShapeFile::POLYGON_TYPE);
+$shp = new ShapeFile(ShapeFile::POLYGON_TYPE,array(
+    array('ID', 'N', 8, 0),
+    array('DESC', 'C', 50, 0)
+));
 
 // $record0 = new ShapeRecord(ShapeRecord::POINT_TYPE);
-$record0 = new ShapeRecord(ShapeRecord::POLYGON_TYPE);
-// $record0->addPoint(array("x" => 54.00793, "y" => 32.24872));
-$record0->setFromWkt("POLYGON((-71.1031880899493 42.3152774590236,
+$record0 = new ShapeRecord(ShapeRecord::POLYGON_TYPE,$shp);
+$record0->setData(['ID'=>1,'DESC'=>'dfsdfsdf saسیسشیگگلهسلام']);
+$record0->setFromWkt("SRID=4326;POLYGON((-71.1031880899493 42.3152774590236,
 -71.1031627617667 42.3152960829043,-71.102923838298 42.3149156848307,
 -71.1023097974109 42.3151969047397,-71.1019285062273 42.3147384934248,
 -71.102505233663 42.3144722937587,-71.10277487471 42.3141658254797,
@@ -50,22 +65,19 @@ $shp->addRecord($record0);
 // $shp->addRecord($record1);
 // $shp->addRecord($record2);
 
-$shp->setDBFHeader(array(
+$shp->setDBFHeader(
+                array(
 						array('ID', 'N', 8, 0),
 						array('DESC', 'C', 50, 0)
 					));
 
-$shp->records[0]->DBFData['ID'] = '1';
-$shp->records[0]->DBFData['DESC'] = 'مرگ بر تو';
-
-// $shp->records[1]->DBFData['ID'] = '2';
-// $shp->records[1]->DBFData['DESC'] = 'BBBBBBBBBB';
-
-// $shp->records[2]->DBFData['ID'] = '3';
-// $shp->records[2]->DBFData['DESC'] = 'CCCCCCCCCCC';
 
 $shp->saveToFile('shp/new_shape.*');
 
 echo "The ShapeFile was created.<br />\n";
 echo "Return to the <a href='index.php'>index</a>.";
+
+
+
+
 ?>

@@ -55,7 +55,7 @@ class Equi
         $lon = $p->x;
         $lat = $p->y;
 
-        $dlon = Common::adjust_lon( $lon - $this->long0 );
+        $dlon = \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 );
         $x = $this->x0 + $this->a * $dlon * cos( $this->lat0 );
         $y = $this->y0 + $this->a * $lat;
 
@@ -74,10 +74,10 @@ class Equi
         $p->y -= $this->y0;
         $lat = $p->y / $this->a;
 
-        if( abs( $lat ) > Common::HALF_PI ) {
+        if( abs( $lat ) > \ShpAdapter\Proj4\Common::HALF_PI ) {
             Proj4php::reportError( "equi:Inv:DataError" );
         }
-        $lon = Common::adjust_lon( $this->long0 + $p->x / ($this->a * cos( $this->lat0 )) );
+        $lon = \ShpAdapter\Proj4\Common::adjust_lon( $this->long0 + $p->x / ($this->a * cos( $this->lat0 )) );
         $p->x = $lon;
         $p->y = $lat;
     }

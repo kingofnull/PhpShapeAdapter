@@ -70,7 +70,7 @@ class Gnom
         $lat = $p->y;
         /* Forward equations
           ----------------- */
-        $dlon = Common::adjust_lon( $lon - $this->long0 );
+        $dlon = \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 );
 
         $sinphi = sin( $lat );
         $cosphi = cos( $lat );
@@ -79,7 +79,7 @@ class Gnom
         $g = $this->sin_p14 * $sinphi + $this->cos_p14 * $cosphi * $coslon;
         $ksp = 1.0;
         
-        if( (g > 0) || (abs( g ) <= Common::EPSLN) ) {
+        if( (g > 0) || (abs( g ) <= \ShpAdapter\Proj4\Common::EPSLN) ) {
             $x = $this->x0 + $this->a * $ksp * $cosphi * sin( $dlon ) / $g;
             $y = $this->y0 + $this->a * $ksp * ($this->cos_p14 * $sinphi - $this->sin_p14 * $cosphi * $coslon) / $g;
         } else {
@@ -132,9 +132,9 @@ class Gnom
             $sinc = sin( $c );
             $cosc = cos( $c );
 
-            $lat = Common::asinz( $cosc * $this->sin_p14 + ($p->y * $sinc * $this->cos_p14) / $rh );
+            $lat = \ShpAdapter\Proj4\Common::asinz( $cosc * $this->sin_p14 + ($p->y * $sinc * $this->cos_p14) / $rh );
             $lon = atan2( $p->x * sinc, rh * $this->cos_p14 * $cosc - $p->y * $this->sin_p14 * $sinc );
-            $lon = Common::adjust_lon( $this->long0 + $lon );
+            $lon = \ShpAdapter\Proj4\Common::adjust_lon( $this->long0 + $lon );
         } else {
             $lat = $this->phic0;
             $lon = 0.0;

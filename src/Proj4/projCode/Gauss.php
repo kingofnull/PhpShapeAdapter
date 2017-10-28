@@ -26,10 +26,10 @@ class Gauss
         $this->C = sqrt(1.0 + $this->es * $cphi * $cphi / (1.0 - $this->es));
         $this->phic0 = asin($sphi / $this->C);
         $this->ratexp = 0.5 * $this->C * $this->e;
-        $this->K = tan(0.5 * $this->phic0 + Common::FORTPI)
+        $this->K = tan(0.5 * $this->phic0 + \ShpAdapter\Proj4\Common::FORTPI)
             / (
-                pow(tan(0.5 * $this->lat0 + Common::FORTPI), $this->C)
-                * Common::srat($this->e * $sphi, $this->ratexp)
+                pow(tan(0.5 * $this->lat0 + \ShpAdapter\Proj4\Common::FORTPI), $this->C)
+                * \ShpAdapter\Proj4\Common::srat($this->e * $sphi, $this->ratexp)
             );
     }
 
@@ -42,7 +42,7 @@ class Gauss
         $lon = $p->x;
         $lat = $p->y;
 
-        $p->y = 2.0 * atan($this->K * pow(tan(0.5 * $lat + Common::FORTPI), $this->C) * Common::srat($this->e * sin($lat), $this->ratexp)) - Common::HALF_PI;
+        $p->y = 2.0 * atan($this->K * pow(tan(0.5 * $lat + \ShpAdapter\Proj4\Common::FORTPI), $this->C) * \ShpAdapter\Proj4\Common::srat($this->e * sin($lat), $this->ratexp)) - \ShpAdapter\Proj4\Common::HALF_PI;
         $p->x = $this->C * $lon;
 
         return $p;
@@ -57,10 +57,10 @@ class Gauss
         $DEL_TOL = 1e-14;
         $lon = $p->x / $this->C;
         $lat = $p->y;
-        $num = pow(tan(0.5 * $lat + Common::FORTPI) / $this->K, 1.0 / $this->C);
+        $num = pow(tan(0.5 * $lat + \ShpAdapter\Proj4\Common::FORTPI) / $this->K, 1.0 / $this->C);
 
-        for ($i = Common::MAX_ITER; $i > 0; --$i) {
-            $lat = 2.0 * atan( $num * Common::srat($this->e * sin($p->y), -0.5 * $this->e)) - Common::HALF_PI;
+        for ($i = \ShpAdapter\Proj4\Common::MAX_ITER; $i > 0; --$i) {
+            $lat = 2.0 * atan( $num * \ShpAdapter\Proj4\Common::srat($this->e * sin($p->y), -0.5 * $this->e)) - \ShpAdapter\Proj4\Common::HALF_PI;
 
             if (abs($lat - $p->y) < $DEL_TOL) {
                 break;

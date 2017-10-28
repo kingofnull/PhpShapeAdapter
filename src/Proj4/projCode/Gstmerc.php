@@ -24,7 +24,7 @@ class Gstmerc
         $sinz = sin( $this->lat0 );
         $pc = asin( $sinz / $this->rs );
         $sinzpc = sin( $pc );
-        $this->cp = Common::latiso(0.0, $pc, $sinzpc) - $this->rs * Common::latiso($this->e, $this->lat0, $sinz);
+        $this->cp = \ShpAdapter\Proj4\Common::latiso(0.0, $pc, $sinzpc) - $this->rs * \ShpAdapter\Proj4\Common::latiso($this->e, $this->lat0, $sinz);
         $this->n2 = $this->k0 * $this->a * sqrt( 1.0 - $this->e * $this->e ) / (1.0 - $this->e * $this->e * $sinz * $sinz);
         $this->xs = $this->x0;
         $this->ys = $this->y0 - $this->n2 * $pc;
@@ -42,9 +42,9 @@ class Gstmerc
         $lat = $p->y;
 
         $L = $this->rs * ($lon - $this->lc);
-        $Ls = $this->cp + ($this->rs * Common::latiso($this->e, $lat, sin($lat)));
+        $Ls = $this->cp + ($this->rs * \ShpAdapter\Proj4\Common::latiso($this->e, $lat, sin($lat)));
         $lat1 = asin(sin($L) / cosh($Ls));
-        $Ls1 = Common::latiso( 0.0, $lat1, sin($lat1));
+        $Ls1 = \ShpAdapter\Proj4\Common::latiso( 0.0, $lat1, sin($lat1));
         $p->x = $this->xs + ($this->n2 * $Ls1);
         $p->y = $this->ys + ($this->n2 * atan(sinh($Ls) / cos($L)));
         return $p;
@@ -59,10 +59,10 @@ class Gstmerc
 
         $L = atan(sinh(($x - $this->xs) / $this->n2) / cos(($y - $this->ys) / $this->n2));
         $lat1 = asin(sin(($y - $this->ys) / $this->n2 ) / cosh(($x - $this->xs) / $this->n2));
-        $LC = Common::latiso(0.0, $lat1, sin($lat1));
+        $LC = \ShpAdapter\Proj4\Common::latiso(0.0, $lat1, sin($lat1));
 
         $p->x = $this->lc + $L / $this->rs;
-        $p->y = Common::invlatiso($this->e, ($LC - $this->cp) / $this->rs);
+        $p->y = \ShpAdapter\Proj4\Common::invlatiso($this->e, ($LC - $this->cp) / $this->rs);
 
         return $p;
     }

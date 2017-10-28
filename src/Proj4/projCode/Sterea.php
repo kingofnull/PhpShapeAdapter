@@ -43,7 +43,7 @@ class Sterea extends Gauss
     public function forward($p)
     {
         // adjust del longitude
-        $p->x = Common::adjust_lon($p->x - $this->long0);
+        $p->x = \ShpAdapter\Proj4\Common::adjust_lon($p->x - $this->long0);
 
         //$p = Proj4php::$proj['gauss']->forward($p);
         $p = parent::forward($p);
@@ -91,7 +91,7 @@ class Sterea extends Gauss
         //$p = Proj4php::$proj['gauss']->inverse($p);
         $p = parent::inverse($p);
         // adjust longitude to CM
-        $p->x = Common::adjust_lon($p->x + $this->long0);
+        $p->x = \ShpAdapter\Proj4\Common::adjust_lon($p->x + $this->long0);
 
         return $p;
     }

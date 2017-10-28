@@ -60,25 +60,25 @@ class Vandg
 
         /* Forward equations
           ----------------- */
-        $dlon = Common::adjust_lon( $lon - $this->long0 );
+        $dlon = \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 );
         $x;
         $y;
 
-        if( abs( $lat ) <= Common::EPSLN ) {
+        if( abs( $lat ) <= \ShpAdapter\Proj4\Common::EPSLN ) {
             $x = $this->x0 + $this->R * $dlon;
             $y = $this->y0;
         }
-        $theta = Common::asinz( 2.0 * abs( $lat / Common::PI ) );
-        if( (abs( $dlon ) <= Common::EPSLN) || (abs( abs( $lat ) - Common::HALF_PI ) <= Common::EPSLN) ) {
+        $theta = \ShpAdapter\Proj4\Common::asinz( 2.0 * abs( $lat / \ShpAdapter\Proj4\Common::PI ) );
+        if( (abs( $dlon ) <= \ShpAdapter\Proj4\Common::EPSLN) || (abs( abs( $lat ) - \ShpAdapter\Proj4\Common::HALF_PI ) <= \ShpAdapter\Proj4\Common::EPSLN) ) {
             $x = $this->x0;
             if( $lat >= 0 ) {
-                $y = $this->y0 + Common::PI * $this->R * tan( .5 * $theta );
+                $y = $this->y0 + \ShpAdapter\Proj4\Common::PI * $this->R * tan( .5 * $theta );
             } else {
-                $y = $this->y0 + Common::PI * $this->R * - tan( .5 * $theta );
+                $y = $this->y0 + \ShpAdapter\Proj4\Common::PI * $this->R * - tan( .5 * $theta );
             }
             //  return(OK);
         }
-        $al = .5 * abs( (Common::PI / $dlon) - ($dlon / Common::PI) );
+        $al = .5 * abs( (\ShpAdapter\Proj4\Common::PI / $dlon) - ($dlon / \ShpAdapter\Proj4\Common::PI) );
         $asq = $al * $al;
         $sinth = sin( $theta );
         $costh = cos( $theta );
@@ -87,16 +87,16 @@ class Vandg
         $gsq = $g * $g;
         $m = $g * (2.0 / $sinth - 1.0);
         $msq = $m * $m;
-        $con = Common::PI * $this->R * ($al * ($g - $msq) + sqrt( $asq * ($g - $sq) * ($g - $msq) - ($msq + $asq) * ($gsq - $msq) )) / ($msq + $asq);
+        $con = \ShpAdapter\Proj4\Common::PI * $this->R * ($al * ($g - $msq) + sqrt( $asq * ($g - $sq) * ($g - $msq) - ($msq + $asq) * ($gsq - $msq) )) / ($msq + $asq);
         if( $dlon < 0 ) {
             $con = -$con;
         }
         $x = $this->x0 + $con;
-        $con = abs( $con / (Common::PI * $this->R) );
+        $con = abs( $con / (\ShpAdapter\Proj4\Common::PI * $this->R) );
         if( $lat >= 0 ) {
-            $y = $this->y0 + Common::PI * $this->R * sqrt( 1.0 - $con * $con - 2.0 * $al * $con );
+            $y = $this->y0 + \ShpAdapter\Proj4\Common::PI * $this->R * sqrt( 1.0 - $con * $con - 2.0 * $al * $con );
         } else {
-            $y = $this->y0 - Common::PI * $this->R * sqrt( 1.0 - $con * $con - 2.0 * $al * $con );
+            $y = $this->y0 - \ShpAdapter\Proj4\Common::PI * $this->R * sqrt( 1.0 - $con * $con - 2.0 * $al * $con );
         }
         
         $p->x = $x;
@@ -131,7 +131,7 @@ class Vandg
           ----------------- */
         $p->x -= $this->x0;
         $p->y -= $this->y0;
-        $con = Common::PI * $this->R;
+        $con = \ShpAdapter\Proj4\Common::PI * $this->R;
         $xx = $p->x / $con;
         $yy = $p->y / $con;
         $xys = $xx * $xx + $yy * $yy;
@@ -151,15 +151,15 @@ class Vandg
         }
         $th1 = acos( $con ) / 3.0;
         if( $p->$y >= 0 ) {
-            $lat = (-$m1 * cos( $th1 + Common::PI / 3.0 ) - $c2 / 3.0 / $c3) * Common::PI;
+            $lat = (-$m1 * cos( $th1 + \ShpAdapter\Proj4\Common::PI / 3.0 ) - $c2 / 3.0 / $c3) * \ShpAdapter\Proj4\Common::PI;
         } else {
-            $lat = -(-m1 * cos( $th1 + Common::PI / 3.0 ) - $c2 / 3.0 / $c3) * Common::PI;
+            $lat = -(-m1 * cos( $th1 + \ShpAdapter\Proj4\Common::PI / 3.0 ) - $c2 / 3.0 / $c3) * \ShpAdapter\Proj4\Common::PI;
         }
 
-        if( abs( $xx ) < Common::EPSLN ) {
+        if( abs( $xx ) < \ShpAdapter\Proj4\Common::EPSLN ) {
             $lon = $this->$long0;
         }
-        $lon = Common::adjust_lon( $this->long0 + Common::PI * ($xys - 1.0 + sqrt( 1.0 + 2.0 * ($xx * $xx - $yy * $yy) + $xys * $xys )) / 2.0 / $xx );
+        $lon = \ShpAdapter\Proj4\Common::adjust_lon( $this->long0 + \ShpAdapter\Proj4\Common::PI * ($xys - 1.0 + sqrt( 1.0 + 2.0 * ($xx * $xx - $yy * $yy) + $xys * $xys )) / 2.0 / $xx );
 
         $p->x = $lon;
         $p->y = $lat;

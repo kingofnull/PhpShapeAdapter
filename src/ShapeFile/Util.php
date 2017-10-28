@@ -35,4 +35,43 @@ class Util{
 
 		return $result;
 	  }
+
+    static function utf8to1256($str) {
+        $trans=[
+            'ی'=>'ي',
+            '۱'=>'1',
+            '۲'=>'2',
+            '۳'=>'3',
+            '۴'=>'4',
+            '۵'=>'5',
+            '۶'=>'6',
+            '۷'=>'7',
+            '۸'=>'8',
+            '۹'=>'9',
+            '۰'=>'0',
+        ];
+        $str=str_replace(array_keys($trans),array_values($trans) , $str);
+        $str=iconv("UTF-8", 'WINDOWS-1256//TRANSLIT//IGNORE',$str);
+        return $str;
+    }
+
+
+    static function _1256toUtf8($str) {
+        $trans=[
+            'ی'=>'ي',
+            '۱'=>'1',
+            '۲'=>'2',
+            '۳'=>'3',
+            '۴'=>'4',
+            '۵'=>'5',
+            '۶'=>'6',
+            '۷'=>'7',
+            '۸'=>'8',
+            '۹'=>'9',
+            '۰'=>'0',
+        ];
+        $str=str_replace(array_values($trans),array_keys($trans) , $str);
+        $str=iconv('WINDOWS-1256',"UTF-8//TRANSLIT//IGNORE" ,$str);
+        return $str;
+    }
  }

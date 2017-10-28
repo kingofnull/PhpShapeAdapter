@@ -65,7 +65,7 @@ class Cea
         
         /* Forward equations
           ----------------- */
-        $dlon = Common::adjust_lon( $lon - $this->long0 );
+        $dlon = \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 );
         $x = $this->x0 + $this->a * $dlon * cos( $this->lat_ts );
         $y = $this->y0 + $this->a * sin( $lat ) / cos( $this->lat_ts );
         /* Elliptical Forward Transform
@@ -94,7 +94,7 @@ class Cea
         $p->x -= $this->x0;
         $p->y -= $this->y0;
 
-        $p->x = Common::adjust_lon( $this->long0 + ($p->x / $this->a) / cos( $this->lat_ts ) );
+        $p->x = \ShpAdapter\Proj4\Common::adjust_lon( $this->long0 + ($p->x / $this->a) / cos( $this->lat_ts ) );
         $p->y = asin( ($p->y / $this->a) * cos( $this->lat_ts ) );
         
         return $p;

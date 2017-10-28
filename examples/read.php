@@ -8,10 +8,13 @@ include "../vendor/autoload.php";
 
 // use \lib\shapeFile\ShapeFile;
 
+
+
+
 $shp = new ShpAdapter\ShapeFile\ShapeFile(1); 
 $shp->openFile('shp/new_shape.*');
 while($r=$shp->nextRecord()){
-	print_r([json_encode($r->isValid),$r->DBFData,$r->wkt]);
+	print_r([json_encode($r->isValid),$r->DBFData['desc'],$r->wkt]);
 	echo("\n");
 	// break;
 	// break;

@@ -66,7 +66,7 @@ class Ortho
 
         /* Forward equations
           ----------------- */
-        $dlon = Common::adjust_lon($lon - $this->long0);
+        $dlon = \ShpAdapter\Proj4\Common::adjust_lon($lon - $this->long0);
 
         $sinphi = sin($lat);
         $cosphi = cos($lat);
@@ -75,7 +75,7 @@ class Ortho
         $g = $this->sin_p14 * sinphi + $this->cos_p14 * $cosphi * $coslon;
         $ksp = 1.0;
 
-        if (($g > 0) || (abs($g) <= Common::EPSLN)) {
+        if (($g > 0) || (abs($g) <= \ShpAdapter\Proj4\Common::EPSLN)) {
             $x = $this->a * $ksp * $cosphi * sin($dlon);
             $y = $this->y0 + $this->a * $ksp * ($this->cos_p14 * $sinphi - $this->sin_p14 * $cosphi * $coslon);
         } else {
@@ -116,25 +116,25 @@ class Ortho
             Proj4php::reportError("orthoInvDataError");
         }
 
-        $z = Common::asinz($rh / $this->a);
+        $z = \ShpAdapter\Proj4\Common::asinz($rh / $this->a);
 
         $sinz = sin($z);
         $cosz = cos($z);
 
         $lon = $this->long0;
 
-        if (abs($rh) <= Common::EPSLN) {
+        if (abs($rh) <= \ShpAdapter\Proj4\Common::EPSLN) {
             $lat = $this->lat0;
         }
 
-        $lat = Common::asinz($cosz * $this->sin_p14 + ($p->y * $sinz * $this->cos_p14) / $rh);
-        $con = abs($this->lat0) - Common::HALF_PI;
+        $lat = \ShpAdapter\Proj4\Common::asinz($cosz * $this->sin_p14 + ($p->y * $sinz * $this->cos_p14) / $rh);
+        $con = abs($this->lat0) - \ShpAdapter\Proj4\Common::HALF_PI;
 
-        if (abs(con) <= Common::EPSLN) {
+        if (abs(con) <= \ShpAdapter\Proj4\Common::EPSLN) {
             if ($this->lat0 >= 0) {
-                $lon = Common::adjust_lon($this->long0 + atan2($p->x, -$p->y));
+                $lon = \ShpAdapter\Proj4\Common::adjust_lon($this->long0 + atan2($p->x, -$p->y));
             } else {
-                $lon = Common::adjust_lon($this->long0 - atan2(-$p->x, $p->y));
+                $lon = \ShpAdapter\Proj4\Common::adjust_lon($this->long0 - atan2(-$p->x, $p->y));
             }
         }
         $con = $cosz - $this->sin_p14 * sin($lat);

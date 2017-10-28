@@ -93,7 +93,7 @@ class Lcc
         }
 
         // Standard Parallels cannot be equal and on opposite sides of the equator
-        if (abs($this->lat1 + $this->lat2) < Common::EPSLN) {
+        if (abs($this->lat1 + $this->lat2) < \ShpAdapter\Proj4\Common::EPSLN) {
             Proj4php::reportError("lcc:init: Equal Latitudes");
             return;
         }
@@ -103,17 +103,17 @@ class Lcc
 
         $sin1 = sin($this->lat1);
         $cos1 = cos($this->lat1);
-        $ms1 = Common::msfnz($this->e, $sin1, $cos1);
-        $ts1 = Common::tsfnz($this->e, $this->lat1, $sin1);
+        $ms1 = \ShpAdapter\Proj4\Common::msfnz($this->e, $sin1, $cos1);
+        $ts1 = \ShpAdapter\Proj4\Common::tsfnz($this->e, $this->lat1, $sin1);
 
         $sin2 = sin($this->lat2);
         $cos2 = cos($this->lat2);
-        $ms2 = Common::msfnz($this->e, $sin2, $cos2);
-        $ts2 = Common::tsfnz($this->e, $this->lat2, $sin2);
+        $ms2 = \ShpAdapter\Proj4\Common::msfnz($this->e, $sin2, $cos2);
+        $ts2 = \ShpAdapter\Proj4\Common::tsfnz($this->e, $this->lat2, $sin2);
 
-        $ts0 = Common::tsfnz($this->e, $this->lat0, sin($this->lat0));
+        $ts0 = \ShpAdapter\Proj4\Common::tsfnz($this->e, $this->lat0, sin($this->lat0));
 
-        if (abs($this->lat1 - $this->lat2) > Common::EPSLN) {
+        if (abs($this->lat1 - $this->lat2) > \ShpAdapter\Proj4\Common::EPSLN) {
             $this->ns = log($ms1 / $ms2) / log($ts1 / $ts2);
         } else {
             $this->ns = $sin1;
@@ -136,17 +136,17 @@ class Lcc
 
         // convert to radians
         if ($lat <= 90.0 && $lat >= -90.0 && $lon <= 180.0 && $lon >= -180.0) {
-            //lon = lon * Common::D2R;
-            //lat = lat * Common::D2R;
+            //lon = lon * \ShpAdapter\Proj4\Common::D2R;
+            //lat = lat * \ShpAdapter\Proj4\Common::D2R;
         } else {
             Proj4php::reportError('lcc:forward: llInputOutOfRange: ' . $lon . ' : ' . $lat);
             return;
         }
 
-        $con = abs(abs($lat) - Common::HALF_PI);
+        $con = abs(abs($lat) - \ShpAdapter\Proj4\Common::HALF_PI);
 
-        if ($con > Common::EPSLN) {
-            $ts = Common::tsfnz($this->e, $lat, sin($lat));
+        if ($con > \ShpAdapter\Proj4\Common::EPSLN) {
+            $ts = \ShpAdapter\Proj4\Common::tsfnz($this->e, $lat, sin($lat));
             $rh1 = ($this->a * $this->f0 * pow($ts, $this->ns));///$this->to_meter;
         } else {
             $con = $lat * $this->ns;
@@ -158,7 +158,7 @@ class Lcc
             $rh1 = 0;
         }
 
-        $theta = $this->ns * Common::adjust_lon($lon - $this->long0);
+        $theta = $this->ns * \ShpAdapter\Proj4\Common::adjust_lon($lon - $this->long0);
         $p->x = /*$this->to_meter **/ ($this->k0 * ($rh1 * sin($theta)) + $this->x0);
         $p->y = /*$this->to_meter **/ ($this->k0 * ($this->rh - $rh1 * cos($theta)) + $this->y0);
 
@@ -185,13 +185,13 @@ class Lcc
       $str.= "NF = $this->y0\n";
       $str.= "a=$this->a\n";
       $str.= "e=$this->e\n";
-      $str.= "m1=".Common::msfnz($this->e, sin($this->lat1), cos($this->lat1))."\n";
-      $str.= "m2=".Common::msfnz($this->e, sin($this->lat2), cos($this->lat2))."\n";
+      $str.= "m1=".\ShpAdapter\Proj4\Common::msfnz($this->e, sin($this->lat1), cos($this->lat1))."\n";
+      $str.= "m2=".\ShpAdapter\Proj4\Common::msfnz($this->e, sin($this->lat2), cos($this->lat2))."\n";
       $str.= "n=$this->ns\n";
       $str.= "F=$this->f0\n";
-      $str.= "tF=".Common::tsfnz($this->e, $this->lat0, sin($this->lat0))."\n";
-      $str.= "t1=".Common::tsfnz($this->e, $this->lat1, sin($this->lat1))."\n";
-      $str.= "t2=".Common::tsfnz($this->e, $this->lat2, sin($this->lat2))."\n";
+      $str.= "tF=".\ShpAdapter\Proj4\Common::tsfnz($this->e, $this->lat0, sin($this->lat0))."\n";
+      $str.= "t1=".\ShpAdapter\Proj4\Common::tsfnz($this->e, $this->lat1, sin($this->lat1))."\n";
+      $str.= "t2=".\ShpAdapter\Proj4\Common::tsfnz($this->e, $this->lat2, sin($this->lat2))."\n";
       $str.= "rF=$this->rh\n";
       return $str;
     }
@@ -223,15 +223,15 @@ class Lcc
         if (($rh1 != 0) || ($this->ns > 0.0)) {
             $con = 1.0 / $this->ns;
             $ts = pow(($rh1 / ($this->a * $this->f0)), $con);
-            $lat = Common::phi2z($this->e, $ts);
+            $lat = \ShpAdapter\Proj4\Common::phi2z($this->e, $ts);
 
             if ($lat == -9999) {
                 return null;
             }
         } else {
-            $lat = -Common::HALF_PI;
+            $lat = -\ShpAdapter\Proj4\Common::HALF_PI;
         }
-        $lon = Common::adjust_lon($theta / $this->ns + $this->long0);
+        $lon = \ShpAdapter\Proj4\Common::adjust_lon($theta / $this->ns + $this->long0);
 
         $p->x = $lon;
         $p->y = $lat;

@@ -111,6 +111,7 @@ class WritableTable extends Table
         $this->writeBytes(str_pad("", 4, chr(0)));
         $this->writeBytes(str_pad("", 8, chr(0)));
         $this->writeByte($this->mdxFlag);
+//        var_dump(ftell($this->fp));
         $this->writeByte($this->languageCode);
         $this->writeBytes(str_pad("", 2, chr(0)));
         

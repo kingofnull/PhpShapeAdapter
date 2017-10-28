@@ -1,4 +1,5 @@
 <?php
+
 namespace ShpAdapter\Proj4;
 
 /**
@@ -90,7 +91,7 @@ class Proj
 
 
     public $to_meter = 1.0;
-    
+
     public $sphere = false;
 
     /**
@@ -107,27 +108,24 @@ class Proj
         $this->proj4php = $proj4php;
 
 
-
-
         // Check to see if $this is a Well Known Text (WKT) string.
         // This is an old, deprecated format, but still used.
         // CHECKME: are these the WKT "objects"? If so, we probably
         // need to check the string *starts* with these names.
 
         if (preg_match('/(GEOGCS|GEOCCS|PROJCS|LOCAL_CS)/', $srsCode)) {
-            $this->to_rads=COMMON::D2R;
+            $this->to_rads = COMMON::D2R;
 
 
-
-            $params=Wkt::Parse($srsCode);
+            $params = Wkt::Parse($srsCode);
 
             // TODO: find a better way to apply wkt params to this instance
-            foreach($params as $k=>$v){
-                $this->$k=$v;
+            foreach ($params as $k => $v) {
+                $this->$k = $v;
             }
 
 
-            if(isset($this->defData)){
+            if (isset($this->defData)) {
                 // wkt codes can contain EXTENSION["PROJ4", "..."]
                 // for example SR-ORG:6
                 $this->parseDefs();
@@ -135,21 +133,23 @@ class Proj
                 return;
             }
 
+
+
             $this->deriveConstants();
             $this->loadProjCode($this->projName);
             return;
         }
 
-        if(strpos($srsCode,'+proj')===0){
+        if (strpos($srsCode, '+proj') !== false) {
 
-            $this->defData=$srsCode;
+            $this->defData = $srsCode;
             $this->parseDefs();
             $this->loadProjCode($this->projName);
             $this->initTransforms();
 
             return;
 
-        }elseif (strpos($srsCode, 'urn:') === 0) {
+        } elseif (strpos($srsCode, 'urn:') === 0) {
             // DGR 2008-08-03 : support urn and url
             //urn:ORIGINATOR:def:crs:CODESPACE:VERSION:ID
             $urn = explode(':', $srsCode);
@@ -180,6 +180,7 @@ class Proj
             $this->srsCode = $this->srsCode;
             $this->srsAuth = 'epsg';
             $this->srsProjNumber = substr($this->srsCode, 5);
+//            var_dump($this->srsProjNumber);
             // DGR 2007-11-20 : authority IGNF
         } elseif (strpos($this->srsCode, "IGNF") === 0) {
             $this->srsCode = $this->srsCode;
@@ -299,7 +300,7 @@ class Proj
         }
 
         // The class name for the projection code
-        $classname = '\\proj4php\\projCode\\' . ucfirst($projName);
+        $classname = '\\ShpAdapter\\Proj4\\projCode\\' . ucfirst($projName);
 
         if (class_exists($classname)) {
             // Instantiate the class then store it in the global static (for now) $prog array.
@@ -330,7 +331,7 @@ class Proj
      */
     public function loadProjCodeFailure($projName)
     {
-        Proj4php::reportError("failed to find projection file for: (".gettype($projName).")" . $projName);
+        Proj4php::reportError("failed to find projection file for: (" . gettype($projName) . ")" . $projName);
         //TBD initialize with identity transforms so proj will still work?
     }
 
@@ -397,12 +398,12 @@ class Proj
      */
     public function parseDefs()
     {
-        if(!isset($this->defData)){
+        if (!isset($this->defData)) {
             // allow wkt to define defData, and not be overwritten here.
             $this->defData = $this->proj4php->getDef($this->srsCode);
         }
 
-        if ( ! $this->defData) {
+        if (!$this->defData) {
             return;
         }
 
@@ -433,14 +434,16 @@ class Proj
                 case "units":
                     $this->units = trim($paramVal);
                     break;
-                case "datum": $this->datumCode = trim($paramVal);
+                case "datum":
+                    $this->datumCode = trim($paramVal);
                     break;
-                case "nadgrids": $this->nagrids = trim($paramVal);
+                case "nadgrids":
+                    $this->nagrids = trim($paramVal);
                     break;
                 case "ellps":
                     $this->ellps = trim($paramVal);
-                    if ($this->ellps=='WGS84' && !isset($this->datumCode))
-                       $this->datumCode = trim($paramVal);
+                    if ($this->ellps == 'WGS84' && !isset($this->datumCode))
+                        $this->datumCode = trim($paramVal);
                     break;
                 case "a":
                     // semi-major radius
@@ -512,7 +515,7 @@ class Proj
                     $this->utmSouth = true;
                     break;
                 case "towgs84":
-                    $this->datum_params = explode( ",", $paramVal);
+                    $this->datum_params = explode(",", $paramVal);
                     break;
                 case "to_meter":
                     // cartesian scaling
@@ -528,8 +531,8 @@ class Proj
 
                     $this->from_greenwich =
                         $this->proj4php->hasPrimeMeridian($paramVal)
-                        ? $this->proj4php->getPrimeMeridian($paramVal)
-                        : floatval($paramVal);
+                            ? $this->proj4php->getPrimeMeridian($paramVal)
+                            : floatval($paramVal);
 
                     $this->from_greenwich *= Common::D2R;
                     break;
@@ -572,7 +575,7 @@ class Proj
             if (is_array($datumDef)) {
                 $this->datum_params = array_key_exists('towgs84', $datumDef) ? explode(',', $datumDef['towgs84']) : null;
 
-               if(!isset($this->ellps)){
+                if (!isset($this->ellps)) {
                     //in the case of SR-ORG:7191, proj for defines  +datum=wgs84, but also +ellps=krass. this would have overwriten that ellipsoid
                     $this->ellps = $datumDef['ellipse'];
                 }
@@ -582,7 +585,7 @@ class Proj
 
         // Do we have an ellipsoid?
         if (!isset($this->a)) {
-            if ( ! isset($this->ellps) || strlen($this->ellps) == 0 || ! $this->proj4php->hasEllipsoid($this->ellps)) {
+            if (!isset($this->ellps) || strlen($this->ellps) == 0 || !$this->proj4php->hasEllipsoid($this->ellps)) {
                 $ellipse = $this->proj4php->getEllipsoid('WGS84');
             } else {
                 $ellipse = $this->proj4php->getEllipsoid($this->ellps);
@@ -591,7 +594,7 @@ class Proj
             Proj4php::extend($this, $ellipse);
         }
 
-        if (isset($this->rf) && !isset($this->b)&&$this->rf!=0) { // SR-ORG:28 division by 0
+        if (isset($this->rf) && !isset($this->b) && $this->rf != 0) { // SR-ORG:28 division by 0
 
             $this->b = (1.0 - 1.0 / $this->rf) * $this->a;
         }
@@ -622,7 +625,7 @@ class Proj
         // used in geocentric
         $this->ep2 = ($this->a2 - $this->b2) / $this->b2;
 
-        if ( ! isset($this->k0)) {
+        if (!isset($this->k0)) {
             // default value
             $this->k0 = 1.0;
         }
@@ -634,4 +637,21 @@ class Proj
 
         $this->datum = new Datum($this);
     }
+
+
+    public static function getList()
+    {
+        $filename = __DIR__ . '/defs' ;
+
+
+        $list= (array_map(function($str){return basename($str,'.php');},glob("$filename/*.{php}", GLOB_BRACE)));
+//        array_merge($this->proj4php->getDefs())
+        return $list;
+    }
+
+    public function getDefData(){
+        return $this->defData;
+    }
 }
+
+

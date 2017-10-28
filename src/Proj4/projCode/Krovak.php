@@ -82,7 +82,7 @@ class Krovak
         
         $lon = $p->x;
         $lat = $p->y;
-        $delta_lon = Common::adjust_lon( $lon - $this->long0 ); // Delta longitude
+        $delta_lon = \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 ); // Delta longitude
         
         /* Transformation */
         $gfi = pow( ((1. + $this->e * sin( $lat )) / (1. - $this->e * sin( $lat )) ), ($this->alfa * $this->e / 2. ) );

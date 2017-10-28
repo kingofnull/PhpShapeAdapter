@@ -47,7 +47,7 @@ class Sinu
         #$this->R = 6370997.0; //Radius of earth
 
         if( isset($this->sphere) ) { //fixes SR-ORG:6965
-            $this->en = Common::pj_enfn( $this->es );
+            $this->en = \ShpAdapter\Proj4\Common::pj_enfn( $this->es );
         } else {
             $this->n = 1.;
             $this->m = 0.;
@@ -67,17 +67,17 @@ class Sinu
 
         /* Forward equations
           ----------------- */
-        $lon = Common::adjust_lon( $lon - $this->long0 );
+        $lon = \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 );
         
         if( isset($this->sphere) ) {
             if( !$this->m ) {
                 $lat = $this->n != 1. ? asin( $this->n * sin( $lat ) ) : $lat;
             } else {
                 $k = $this->n * sin( $lat );
-                for( $i = Common::MAX_ITER; $i; --$i ) {
+                for( $i = \ShpAdapter\Proj4\Common::MAX_ITER; $i; --$i ) {
                     $V = ($this->m * $lat + sin( $lat ) - $k) / ($this->m + cos( $lat ));
                     $lat -= $V;
-                    if( abs( $V ) < Common::EPSLN )
+                    if( abs( $V ) < \ShpAdapter\Proj4\Common::EPSLN )
                         break;
                 }
             }
@@ -87,7 +87,7 @@ class Sinu
 
             $s = sin( $lat );
             $c = cos( $lat );
-            $y = $this->a * Common::pj_mlfn( $lat, $s, $c, $this->en );
+            $y = $this->a * \ShpAdapter\Proj4\Common::pj_mlfn( $lat, $s, $c, $this->en );
             $x = $this->a * $lon * $c / sqrt( 1. - $this->es * $s * $s );
         }
 
@@ -120,15 +120,15 @@ class Sinu
             $lon = $p->x / ($this->C_x * ($this->m + cos( $p->y )));
         }
         else {
-            $lat = Common::pj_inv_mlfn( $p->y / $this->a, $this->es, $this->en );
+            $lat = \ShpAdapter\Proj4\Common::pj_inv_mlfn( $p->y / $this->a, $this->es, $this->en );
             $s = abs( $lat );
             
-            if( $s < Common::HALF_PI ) {
+            if( $s < \ShpAdapter\Proj4\Common::HALF_PI ) {
                 $s = sin( $lat );
                 $temp = $this->long0 + $p->x * sqrt( 1. - $this->es * $s * $s ) / ($this->a * cos( $lat ));
                 //temp = $this->long0 + $p->x / ($this->a * cos($lat));
-                $lon = Common::adjust_lon( $temp );
-            } else if( ($s - Common::EPSLN) < Common::HALF_PI ) {
+                $lon = \ShpAdapter\Proj4\Common::adjust_lon( $temp );
+            } else if( ($s - \ShpAdapter\Proj4\Common::EPSLN) < \ShpAdapter\Proj4\Common::HALF_PI ) {
                 $lon = $this->long0;
             }
         }

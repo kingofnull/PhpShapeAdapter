@@ -103,6 +103,16 @@ class Proj4php
     }
 
     /**
+     * Returns a def source data.
+     * Returns an empty string if a def key is not found.
+     * @returns string
+     */
+    public function getDefs()
+    {
+        return $this->defs;
+    }
+
+    /**
      * Adda new def, overwriting if the key already exists.
      * @returns void
      */
@@ -493,7 +503,7 @@ class Proj4php
 
         self::reportDebug("Transform result $point->x $point->y\r\n");
 
-        // Nov 2014 - changed Werner Schäffer
+        // Nov 2014 - changed Werner Schï¿½ffer
         // Clone point to avoid a lot of problems
         return (clone $point);
     }

@@ -43,9 +43,9 @@ class Somerc
         $this->R = $this->k0 * $semiMajorAxis * sqrt( 1 - $e2 ) / (1 - $e2 * pow( $sinPhy0, 2.0 ));
         $this->alpha = sqrt( 1 + $e2 / (1 - $e2) * pow( cos( $phy0 ), 4.0 ) );
         $this->b0 = asin( $sinPhy0 / $this->alpha );
-        $this->K = log( tan( Common::PI / 4.0 + $this->b0 / 2.0 ) )
+        $this->K = log( tan( \ShpAdapter\Proj4\Common::PI / 4.0 + $this->b0 / 2.0 ) )
                   - $this->alpha
-                  * log( tan( Common::PI / 4.0 + $phy0 / 2.0 ) )
+                  * log( tan( \ShpAdapter\Proj4\Common::PI / 4.0 + $phy0 / 2.0 ) )
                   + $this->alpha
                   * $e / 2
                   * log( (1 + $e * $sinPhy0)
@@ -58,14 +58,14 @@ class Somerc
      * @return type 
      */
     public function forward( $p ) {
-        $Sa1 = log( tan( Common::PI / 4.0 - $p->y / 2.0 ) );
+        $Sa1 = log( tan( \ShpAdapter\Proj4\Common::PI / 4.0 - $p->y / 2.0 ) );
         $Sa2 = $this->e / 2.0
                   * log( (1 + $this->e * sin( $p->y ))
                             / (1 - $this->e * sin( $p->y )) );
         $S = -$this->alpha * ($Sa1 + $Sa2) + $this->K;
 
         // spheric latitude
-        $b = 2.0 * (atan( exp( $S ) ) - Common::PI / 4.0);
+        $b = 2.0 * (atan( exp( $S ) ) - \ShpAdapter\Proj4\Common::PI / 4.0);
 
         // spheric longitude
         $I = $this->alpha * ($p->x - $this->lambda0);
@@ -98,7 +98,7 @@ class Somerc
         $X = $p->y - $this->y0;
 
         $rotI = $Y / $this->R;
-        $rotB = 2 * (atan( exp( $X / $this->R ) ) - Common::PI / 4.0);
+        $rotB = 2 * (atan( exp( $X / $this->R ) ) - \ShpAdapter\Proj4\Common::PI / 4.0);
 
         $b = asin( cos( $this->b0 ) * sin( $rotB )
                   + sin( $this->b0 ) * cos( $rotB ) * cos( $rotI ) );
@@ -120,13 +120,13 @@ class Somerc
             //S = log(tan(PI / 4.0 + phy / 2.0));
             $S = 1.0
                       / $this->alpha
-                      * (log( tan( Common::PI / 4.0 + $b / 2.0 ) ) - $this->K)
+                      * (log( tan( \ShpAdapter\Proj4\Common::PI / 4.0 + $b / 2.0 ) ) - $this->K)
                       + $this->e
-                      * log( tan( Common::PI / 4.0
+                      * log( tan( \ShpAdapter\Proj4\Common::PI / 4.0
                                           + asin( $this->e * sin( $phy ) )
                                           / 2.0 ) );
             $prevPhy = $phy;
-            $phy = 2.0 * atan( exp( $S ) ) - Common::PI / 2.0;
+            $phy = 2.0 * atan( exp( $S ) ) - \ShpAdapter\Proj4\Common::PI / 2.0;
         }
 
         $p->x = $lambda;

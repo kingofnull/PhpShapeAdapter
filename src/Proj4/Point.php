@@ -16,7 +16,7 @@ namespace ShpAdapter\Proj4;
  * x and y properties, which will get modified in the transform method.
 */
 
-use Proj4php\Proj;
+
 use InvalidArgumentException;
 
 class Point

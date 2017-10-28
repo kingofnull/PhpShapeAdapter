@@ -106,11 +106,11 @@ class Poly
         $this->temp = $this->b / $this->a;
         $this->es = 1.0 - pow( $this->temp, 2 ); // devait etre dans tmerc.js mais n y est pas donc je commente sinon retour de valeurs nulles 
         $this->e = sqrt( $this->es );
-        $this->e0 = Common::e0fn( $this->es );
-        $this->e1 = Common::e1fn( $this->es );
-        $this->e2 = Common::e2fn( $this->es );
-        $this->e3 = Common::e3fn( $this->es );
-        $this->ml0 = Common::mlfn( $this->e0, $this->e1, $this->e2, $this->e3, $this->lat0 ); //si que des zeros le calcul ne se fait pas
+        $this->e0 = \ShpAdapter\Proj4\Common::e0fn( $this->es );
+        $this->e1 = \ShpAdapter\Proj4\Common::e1fn( $this->es );
+        $this->e2 = \ShpAdapter\Proj4\Common::e2fn( $this->es );
+        $this->e3 = \ShpAdapter\Proj4\Common::e3fn( $this->es );
+        $this->ml0 = \ShpAdapter\Proj4\Common::mlfn( $this->e0, $this->e1, $this->e2, $this->e3, $this->lat0 ); //si que des zeros le calcul ne se fait pas
         //if (!$this->ml0) {$this->ml0=0;}
     }
 
@@ -133,7 +133,7 @@ class Poly
         $lon = $p->x;
         $lat = $p->y;
 
-        $con = Common::adjust_lon( $lon - $this->long0 );
+        $con = \ShpAdapter\Proj4\Common::adjust_lon( $lon - $this->long0 );
         
         if( abs( $lat ) <= .0000001 ) {
             $x = $this->x0 + $this->a * $con;
@@ -142,8 +142,8 @@ class Poly
             $sinphi = sin( $lat );
             $cosphi = cos( $lat );
             
-            $ml = Common::mlfn( $this->e0, $this->e1, $this->e2, $this->e3, $lat );
-            $ms = Common::msfnz( $this->e, $sinphi, $cosphi );
+            $ml = \ShpAdapter\Proj4\Common::mlfn( $this->e0, $this->e1, $this->e2, $this->e3, $lat );
+            $ms = \ShpAdapter\Proj4\Common::msfnz( $this->e, $sinphi, $cosphi );
             
             $x = $this->x0 + $this->a * $ms * sin( $sinphi ) / $sinphi;
             $y = $this->y0 + $this->a * ($ml - $this->ml0 + $ms * (1.0 - cos( $sinphi )) / $sinphi);
@@ -185,7 +185,7 @@ class Poly
             $iflg = phi4z( $this->es, $this->e0, $this->e1, $this->e2, $this->e3, $this->al, $b, $c, $lat );
             if( $iflg != 1 )
                 return($iflg);
-            $lon = Common::adjust_lon( (Common::asinz( $p->x * $c / $this->a ) / sin( $lat )) + $this->long0 );
+            $lon = \ShpAdapter\Proj4\Common::adjust_lon( (\ShpAdapter\Proj4\Common::asinz( $p->x * $c / $this->a ) / sin( $lat )) + $this->long0 );
         }
 
         $p->x = $lon;

@@ -36,13 +36,13 @@ class GeoPHP
       $args = $format;
     }
 
-    $processor_type = $type_map[$type];
+    $processor_type = __NAMESPACE__."\\".$type_map[$type];
 
     if (!$processor_type) {
       throw new exception('geoPHP could not find an adapter of type '.htmlentities($type));
     }
 
-    $processor = new $processor_type();
+    $processor = new  $processor_type();
 
     // Data is not an array, just pass it normally
     if (!is_array($data)) {
