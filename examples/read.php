@@ -2,22 +2,11 @@
 // require_once('ShapeFile.lib.php');
 include "../vendor/autoload.php";
 
- 
-// $page1 = new ShpAdapter\Proj4\Common();
-// die;
-
-// use \lib\shapeFile\ShapeFile;
-
-
-
-
-$shp = new ShpAdapter\ShapeFile\ShapeFile(1); 
+$shp = new ShpAdapter\ShapeFile\ShapeFile();
 $shp->openFile('shp/new_shape.*');
 while($r=$shp->nextRecord()){
 	print_r([json_encode($r->isValid),$r->DBFData['desc'],$r->wkt]);
 	echo("\n");
-	// break;
-	// break;
 }
 	
 

@@ -43,7 +43,7 @@ class ShapeFile
     const MULTIPOINTM_TYPE = 28;
     const MULTIPATCH_TYPE = 31;
 
-    function __construct($shapeType,$dbfHeader=null, $boundingBox = null, $FileName = NULL)
+    function __construct($shapeType=null,$dbfHeader=null, $boundingBox = null, $FileName = NULL)
     {
         $this->shapeType = $shapeType;
         $this->boundingBox = $boundingBox;
