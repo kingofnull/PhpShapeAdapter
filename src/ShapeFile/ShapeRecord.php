@@ -342,13 +342,16 @@ class ShapeRecord
 
         $eMinPoint = new \ShpAdapter\Proj4\Point($this->extend['minx'],  $this->extend['miny'], $srcPrj);
         $eMinPoint = $this->parent->prj4->transform($this->parent->writePrj,$eMinPoint)->toArray();
-        $this->SHPData["xmin"] = $eMinPoint[0];
-        $this->SHPData["ymin"] = $eMinPoint[0];
+        $this->extend['minx']=$this->SHPData["xmin"] = $eMinPoint[0];
+        $this->extend['miny']=$this->SHPData["ymin"] = $eMinPoint[1];
 
         $eMaxPoint = new \ShpAdapter\Proj4\Point($this->extend['maxx'],  $this->extend['maxy'], $srcPrj);
         $eMaxPoint = $this->parent->prj4->transform($this->parent->writePrj,$eMaxPoint)->toArray();
-        $this->SHPData["xmax"] = $eMaxPoint[0];
-        $this->SHPData["ymax"] = $eMaxPoint[1];
+        $this->extend['maxx']=$this->SHPData["xmax"] = $eMaxPoint[0];
+        $this->extend['maxy']=$this->SHPData["ymax"] = $eMaxPoint[1];
+
+
+
 
         //var_dump($extend);die;
 

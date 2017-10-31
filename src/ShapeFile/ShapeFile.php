@@ -128,9 +128,9 @@ class ShapeFile
     }
 
 
-    function saveToFile($FileName = NULL)
+    function saveToFile($FileName = NULL,$bbox= NULL)
     {
-        if (!$this->boundingBox) {
+        if (!$bbox) {
             $this->boundingBox = $this->getBBox();
 //           var_dump($this->boundingBox);
         }
@@ -443,6 +443,7 @@ class ShapeFile
             $maxy = $component_bbox['maxy'] > $maxy ? $component_bbox['maxy'] : $maxy;
             $minx = $component_bbox['minx'] < $minx ? $component_bbox['minx'] : $minx;
             $miny = $component_bbox['miny'] < $miny ? $component_bbox['miny'] : $miny;
+
             $i++;
         }
 

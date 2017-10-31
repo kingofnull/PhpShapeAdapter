@@ -1,5 +1,7 @@
 # PhpShapeAdapter
-A shape file reader and writer with complete support of dbf data and prj file and shx
+A portable shape file reader and writer with complete support of dbf data and prj file and shx.
+This project coded in pure php (ver5.6) and has no dependency on any special extension.
+ 
 
 This library can read and write from Arc Gis shape files.
 
